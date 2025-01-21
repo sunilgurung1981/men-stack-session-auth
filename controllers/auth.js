@@ -15,6 +15,38 @@ router.get('/signup', function(req, res){
 	res.render('auth/signup.ejs')
 })
 
+// Full endpoint
+// /auth/signin
+router.get('/signin', function(req, res){
+	res.render('auth/signin.ejs')
+})
+
+router.post('/sign-in', async function(req, res){
+
+	// Check if the user exists in the db
+	const userInTheDatabase = await UserModel.findOne({username: req.body.username})
+	// ^ if UserModel.findOne doesn't find a user with that username
+	// userInTheDatabase value will be undefined, otherwise it will be the object
+	if(!userInTheDatabase){
+		// you may have to log userInTheDatabase if things aren't working
+		// like you think they are
+		return res.send('Login Failed, Please Try again')
+	}
+
+	// use bcrypt to determine if the users password hash is mathmatically equilavant
+	// to the plain text password from the form submission
+	const validPassword = bcrypt.compareSync(req.body.password, userInTheDatabase.password)
+	// validPassword will either be true or false
+	if(!validPassword){
+		res.send('Login Failed, Please Try again (PW match)')
+	}
+	
+
+
+	
+})
+
+
 // full endpoint
 // /auth/signup POST
 router.post('/signup', async function(req, res){
