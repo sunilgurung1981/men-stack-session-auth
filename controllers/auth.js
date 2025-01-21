@@ -41,8 +41,17 @@ router.post('/sign-in', async function(req, res){
 		res.send('Login Failed, Please Try again (PW match)')
 	}
 	
+	// initialize the session!
+	// storing the username inside the session
+	// req.session.user.username would be the username of 
+	// the logged in user
+	req.session.user = {
+		username: userInTheDatabase.username,
+		_id: userInTheDatabase._id
+	}
 
-
+	// redirect to where you want
+	res.redirect('/')
 	
 })
 

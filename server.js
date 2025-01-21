@@ -6,7 +6,7 @@ const app = express();
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const morgan = require("morgan");
-
+const session = require('express-session')
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
 
@@ -29,6 +29,12 @@ app.use(methodOverride("_method"));
 // Morgan for logging HTTP requests
 app.use(morgan('dev'));
 
+// setup the session
+app.use(session({
+	secret: process.env.SECRET,
+	resave: false,
+	saveUninitialized: true
+}))
 
 // The mounting of your controllers is ALWAYS at the end of the middleware chaiin,
 // because our routers handle the responses to the client,
@@ -39,7 +45,9 @@ app.use('/auth', authCtrl)
 
 // Landing Page
 app.get('/', function(req, res){
-	res.render('index.ejs')
+
+	console.log(req.session, " <- req.sesssion")
+	res.render('index.ejs', {user: req.session.user})
 })
 
 app.listen(port, () => {
